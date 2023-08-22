@@ -14,7 +14,7 @@ const PersonForm = ({
       </div>
       <div>
         number:{" "}
-        <input value={newPhone} onChange={handlePhoneChange} maxLength={12} />
+        <input value={newPhone} onChange={handlePhoneChange} maxLength={12}  pattern="[0-9]+"/>
       </div>
       <div>
         <button type="submit">add</button>
