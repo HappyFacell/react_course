@@ -1,57 +1,74 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios"; // Importar axios para hacer llamadas a la API
-import SearchBar from "./components/SearchBar";
-import CountryList from "./components/CountryList";
-import CountryDetails from "./components/CountryDetails";
 
 const App = () => {
-  const [countries, setCountries] = useState([]); // Estado para almacenar la lista de países
-  const [searchTerm, setSearchTerm] = useState(""); // Estado para el término de búsqueda
-  const [selectedCountry, setSelectedCountry] = useState(null); // Estado para el país seleccionado
+  const [countries, setCountries] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState(null);
 
-  // Llamada a la API para obtener la lista de países
   useEffect(() => {
     axios
       .get("https://restcountries.com/v3.1/all")
-      .then(response => {
+      .then((response) => {
         setCountries(response.data);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error fetching countries:", error);
       });
   }, []);
 
-  // Función para manejar el cambio en el campo de búsqueda
-  const handleSearchChange = event => {
+  const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
-    setSelectedCountry(null); // Restablecer el país seleccionado al cambiar la búsqueda
+    setSelectedCountry(null);
   };
+  console.log(countries);
 
-  // Función para mostrar los detalles de un país específico
-  const showCountryDetails = country => {
-    setSelectedCountry(country);
-  };
-
-  // Filtrar países basados en el término de búsqueda
-  const filteredCountries = countries.filter(country =>
+  const filteredCountries = countries.filter((country) =>
     country.name.common.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const showCountryDetails = (country) => {
+    setSelectedCountry(country);
+  };
 
   return (
     <div>
       <h1>Country Search</h1>
-      <SearchBar searchTerm={searchTerm} handleSearchChange={handleSearchChange} />
+      <div>
+        Search for countries {""}
+        <input type="text" value={searchTerm} onChange={handleSearchChange} />
+      </div>
+      <h2>Countries</h2>
+      {
 
-      {/* Mostrar contenido según la situación */}
-      {filteredCountries.length === 0 ? (
+      filteredCountries.length === 0 ? (
         <p>No matches found</p>
       ) : filteredCountries.length > 10 ? (
         <p>Too many matches, specify another filter</p>
-      ) : selectedCountry ? (
-        <CountryDetails country={selectedCountry} />
-      ) : (
-        <CountryList countries={filteredCountries} showCountryDetails={showCountryDetails} />
-      )}
+      ) : <div>{selectedCountry}</div>
+    //     <div>
+    //   <h2>{selectedCountry.name}</h2>
+    //   <p>Capital: {selectedCountry.capital}</p>
+    //   <p>Population: {selectedCountry.population}</p>
+    //   <h3>Languages</h3>
+    //   <ul>
+    //     {selectedCountry.languages.map(language => (
+    //       <li key={selectedCountry.fifa}>{language}</li>
+    //     ))}
+    //   </ul>
+    //   <img src={selectedCountry.flag} alt={`Flag of ${selectedCountry.name}`} style={{ width: "150px" }} />
+    // </div>
+    //   ) : (
+    //     <div>
+    //   {filteredCountries.map(country => (
+    //     <div key={country.name.common}>
+    //       {country.name}{" "}
+    //       <button onClick={() => showCountryDetails(country)}>Show</button>
+    //     </div>
+    //   ))}
+    // </div>
+    //   )
+      }
     </div>
   );
 };

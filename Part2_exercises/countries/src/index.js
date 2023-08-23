@@ -1,14 +1,5 @@
-import React from 'react';
+import React from "react";
 import ReactDOM from "react-dom";
-import App from './App';
-import axios from 'axios';
+import App from "./App";
 
-axios.get("https://restcountries.com/v3.1/all")
-.then((response) => {
-  const countries = response.data
-  console.log(countries);
-  ReactDOM.createRoot(document.getElementById("root")).render(
-    <App />)
-})
-
-
+ReactDOM.render(<App />, document.getElementById("root"));
