@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios"; // Importar axios para hacer llamadas a la API
+import SearchBar from "./components/SearchBar";
+import CountryList from "./components/CountryList";
+import CountryDetails from "./components/CountryDetails";
 
 const App = () => {
   const [countries, setCountries] = useState([]);
@@ -21,54 +24,43 @@ const App = () => {
     setSearchTerm(event.target.value);
     setSelectedCountry(null);
   };
-  console.log(countries);
 
   const filteredCountries = countries.filter((country) =>
     country.name.common.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const selectOne =
+    filteredCountries.length === 1 ? filteredCountries[0] : null;
+
   const showCountryDetails = (country) => {
     setSelectedCountry(country);
   };
+  console.log(selectOne);
+  console.log(filteredCountries);
 
   return (
     <div>
       <h1>Country Search</h1>
-      <div>
-        Search for countries {""}
-        <input type="text" value={searchTerm} onChange={handleSearchChange} />
-      </div>
-      <h2>Countries</h2>
-      {
-
-      filteredCountries.length === 0 ? (
+      <SearchBar
+        searchTerm={searchTerm}
+        handleSearchChange={handleSearchChange}
+      />
+      {filteredCountries.length === countries.length ? (
+        <p> </p>
+      ) : filteredCountries.length === 0 ? (
         <p>No matches found</p>
       ) : filteredCountries.length > 10 ? (
         <p>Too many matches, specify another filter</p>
-      ) : <div>{selectedCountry}</div>
-    //     <div>
-    //   <h2>{selectedCountry.name}</h2>
-    //   <p>Capital: {selectedCountry.capital}</p>
-    //   <p>Population: {selectedCountry.population}</p>
-    //   <h3>Languages</h3>
-    //   <ul>
-    //     {selectedCountry.languages.map(language => (
-    //       <li key={selectedCountry.fifa}>{language}</li>
-    //     ))}
-    //   </ul>
-    //   <img src={selectedCountry.flag} alt={`Flag of ${selectedCountry.name}`} style={{ width: "150px" }} />
-    // </div>
-    //   ) : (
-    //     <div>
-    //   {filteredCountries.map(country => (
-    //     <div key={country.name.common}>
-    //       {country.name}{" "}
-    //       <button onClick={() => showCountryDetails(country)}>Show</button>
-    //     </div>
-    //   ))}
-    // </div>
-    //   )
-      }
+      ) : selectOne ? (
+        <CountryDetails country={selectOne} />
+      ) : selectedCountry ? (
+        <CountryDetails country={selectedCountry} />
+      ) : (
+        <CountryList
+          countries={filteredCountries}
+          showCountryDetails={showCountryDetails}
+        />
+      )}
     </div>
   );
 };

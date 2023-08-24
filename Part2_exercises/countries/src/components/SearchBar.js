@@ -3,7 +3,7 @@ import React from "react";
 const SearchBar = ({ searchTerm, handleSearchChange }) => {
   return (
     <div>
-      <label htmlFor="search">Search: </label>
+      Find countries 
       <input
         type="text"
         id="search"

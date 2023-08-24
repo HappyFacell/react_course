@@ -1,12 +1,12 @@
 import React from "react";
 
-const CountryList = ({ countries, showCountryDetails }) => {
+const CountryList = ({ countries, showCountryDetails}) => {
   return (
     <div>
-      {countries.map((country) => (
-        <div key={country.alpha3Code}>
-          {country.name}{" "}
-          <button onClick={() => showCountryDetails(country)}>Show</button>
+      {countries.map(country => (
+        <div key={country.fifa}>
+          {country.name.common}
+          <button onClick={() => showCountryDetails(country)}>Show Details</button>
         </div>
       ))}
     </div>
