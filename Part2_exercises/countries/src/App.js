@@ -35,8 +35,6 @@ const App = () => {
   const showCountryDetails = (country) => {
     setSelectedCountry(country);
   };
-  console.log(selectOne);
-  console.log(filteredCountries);
 
   return (
     <div>
