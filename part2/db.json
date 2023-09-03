@@ -4,7 +4,7 @@
       "id": 1,
       "content": "HTML is easy",
       "date": "2019-05-30T17:30:31.098Z",
-      "important": false
+      "important": true
     },
     {
       "id": 2,
@@ -21,8 +21,32 @@
     {
       "content": "New post",
       "date": "2023-08-31T01:46:08.485Z",
-      "important": false,
+      "important": true,
       "id": 4
+    },
+    {
+      "content": "new post",
+      "date": "2023-09-03T19:18:57.136Z",
+      "important": false,
+      "id": 5
+    },
+    {
+      "content": "new post",
+      "date": "2023-09-03T19:18:58.963Z",
+      "important": false,
+      "id": 6
+    },
+    {
+      "content": "hola mundo",
+      "date": "2023-09-03T19:31:56.958Z",
+      "important": true,
+      "id": 7
+    },
+    {
+      "content": "diego",
+      "date": "2023-09-03T19:32:27.859Z",
+      "important": true,
+      "id": 8
     }
   ]
 }
