@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForms";
 import Person from "./components/Persons";
-import axios from "axios";
+import {getAll, create} from "./services/persons"
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -11,8 +11,9 @@ const App = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      setPersons(response.data);
+    getAll()
+    .then((response) => {
+      setPersons(response);
     });
   }, []);
 
@@ -26,11 +27,10 @@ const App = () => {
     };
 
     if (!existingPerson && !existingPhone) {
-      axios
-        .post("http://localhost:3001/persons", personObject)
+      create(personObject)
         .then((response) => {
-          console.log(response.data);
-          setPersons(persons.concat(response.data));
+          console.log(response);
+          setPersons(persons.concat(response));
           setNewName("");
           setNewPhone("");
         });
