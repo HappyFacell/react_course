@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Note from "./components/Note";
-import noteService from "./services/notes";
+import {getAll, update, create} from "./services/notes";
 
 const App = () => {
   const [notes, setNote] = useState([]);
@@ -9,7 +9,8 @@ const App = () => {
 
   useEffect(() => {
     console.log("effect");
-    noteService.getAll().then((initialNotes) => {
+    getAll()
+    .then((initialNotes) => {
       setNote(initialNotes);
     });
   }, []);
@@ -18,8 +19,7 @@ const App = () => {
     const note = notes.find((n) => n.id === id);
     const changedNote = { ...note, important: !note.important };
 
-    noteService
-      .update(id, changedNote)
+      update(id, changedNote)
       .then((returnedNote) => {
         setNote(notes.map((note) => (note.id !== id ? note : returnedNote)));
       })
@@ -37,7 +37,7 @@ const App = () => {
       important: Math.random() > 0.5,
     };
 
-    noteService.create(noteObject)
+    create(noteObject)
     .then((returnedNote) => {
       setNote(notes.concat(returnedNote));
       setNewNote("");

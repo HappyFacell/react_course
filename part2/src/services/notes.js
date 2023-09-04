@@ -19,7 +19,7 @@ const update = async (id, newObject) => {
   return response.data;
 };
 
-export default {
+export {
   getAll,
   create,
   update,
