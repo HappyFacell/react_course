@@ -11,9 +11,7 @@ const App = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    axios
-    .get("http://localhost:3001/persons")
-    .then((response) => {
+    axios.get("http://localhost:3001/persons").then((response) => {
       setPersons(response.data);
     });
   }, []);
@@ -28,9 +26,14 @@ const App = () => {
     };
 
     if (!existingPerson && !existingPhone) {
-      setPersons(persons.concat(personObject));
-      setNewName("");
-      setNewPhone("");
+      axios
+        .post("http://localhost:3001/persons", personObject)
+        .then((response) => {
+          console.log(response.data);
+          setPersons(persons.concat(response.data));
+          setNewName("");
+          setNewPhone("");
+        });
     } else {
       alert(`${newName} is already added to phonebook`);
     }
