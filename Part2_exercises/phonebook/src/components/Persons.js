@@ -1,7 +1,11 @@
 import React from "react";
 
-const Persons = ({persons}) =>{
-    return <p>{persons.name} {persons.number}</p>
+const Persons = ({persons, deletePerson}) =>{
+    return( 
+    <li>
+        {persons.name} {persons.number}
+        <button onClick={deletePerson}>Delete</button>
+    </li>)
 }
 
 export default Persons;

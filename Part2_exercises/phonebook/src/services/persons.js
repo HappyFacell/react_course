@@ -14,7 +14,14 @@ const create = async (newObject) => {
   return response.data;
 };
 
+const deleteOne = async (id) => {
+  const request = axios.delete(`${baseUrl}/${id}`);
+  const response = await request;
+  return response.data;
+};
+
 export {
   getAll,
   create,
+  deleteOne,
 };

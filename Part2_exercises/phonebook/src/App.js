@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForms";
 import Person from "./components/Persons";
-import {getAll, create} from "./services/persons"
+import { getAll, create, deleteOne } from "./services/persons";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -11,8 +11,7 @@ const App = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    getAll()
-    .then((response) => {
+    getAll().then((response) => {
       setPersons(response);
     });
   }, []);
@@ -27,15 +26,25 @@ const App = () => {
     };
 
     if (!existingPerson && !existingPhone) {
-      create(personObject)
-        .then((response) => {
-          console.log(response);
-          setPersons(persons.concat(response));
-          setNewName("");
-          setNewPhone("");
-        });
+      create(personObject).then((response) => {
+        console.log(response);
+        setPersons(persons.concat(response));
+        setNewName("");
+        setNewPhone("");
+      });
     } else {
       alert(`${newName} is already added to phonebook`);
+    }
+  };
+
+  const deletePerson = (id) => {
+    const person = persons.find((person) => person.id === id);
+    if (window.confirm(`Delete ${person.name} ?`)) {
+      deleteOne(id).then((response) => {
+        console.log(response);
+      });
+      const updatedPersons = persons.filter((person) => person.id !== id);
+      setPersons(updatedPersons);
     }
   };
 
@@ -68,9 +77,15 @@ const App = () => {
         addPerson={addPerson}
       />
       <h3>Numbers</h3>
-      {filteredPersons.map((person) => (
-        <Person key={person.name} persons={person} />
-      ))}
+      <ul>
+        {filteredPersons.map((person) => (
+          <Person
+            key={person.name}
+            persons={person}
+            deletePerson={() => deletePerson(person.id)}
+          />
+        ))}
+      </ul>
     </div>
   );
 };
