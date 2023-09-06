@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForms";
 import Person from "./components/Persons";
-import { getAll, create, deleteOne } from "./services/persons";
+import { getAll, create, deleteOne, updateOne } from "./services/persons";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -26,22 +26,48 @@ const App = () => {
     };
 
     if (!existingPerson && !existingPhone) {
-      create(personObject).then((response) => {
-        console.log(response);
+      create(personObject)
+      .then((response) => {
         setPersons(persons.concat(response));
         setNewName("");
         setNewPhone("");
       });
     } else {
-      alert(`${newName} is already added to phonebook`);
+      if (!existingPhone) {
+        if (
+          window.confirm(
+            `${existingPerson.name} is already added to phonebook, replace the old number with a new one?`
+          )
+        ) {
+          updatedPerson(existingPerson.id, personObject);
+        }
+      }
     }
+  };
+
+  const updatedPerson = (id, personObject) => {
+    const person = persons.find((person) => person.id === id);
+    const changedPerson = { ...person, number: personObject.number };
+    updateOne(id, changedPerson)
+    .then((returnedPerson) => {
+      setPersons(
+        persons.map((person) => (person.id !== id ? person : returnedPerson))
+      );
+    })
+    .catch((error) => {
+      console.error("Error updating person:", error);
+    });
   };
 
   const deletePerson = (id) => {
     const person = persons.find((person) => person.id === id);
     if (window.confirm(`Delete ${person.name} ?`)) {
-      deleteOne(id).then((response) => {
+      deleteOne(id)
+      .then((response) => {
         console.log(response);
+      })
+      .catch((error) => {
+        console.error("Error deleting person:", error);
       });
       const updatedPersons = persons.filter((person) => person.id !== id);
       setPersons(updatedPersons);

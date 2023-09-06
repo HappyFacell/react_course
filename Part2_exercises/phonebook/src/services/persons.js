@@ -20,8 +20,15 @@ const deleteOne = async (id) => {
   return response.data;
 };
 
+const updateOne = async (id, personObject) => {
+  const request = axios.put(`${baseUrl}/${id}`, personObject);
+  const response = await request;
+  return response.data;
+}
+
 export {
   getAll,
   create,
   deleteOne,
+  updateOne
 };
