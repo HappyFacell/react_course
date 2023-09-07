@@ -29,8 +29,12 @@ const App = () => {
       create(personObject)
       .then((response) => {
         setPersons(persons.concat(response));
+        console.log(response);
         setNewName("");
         setNewPhone("");
+      })
+      .catch((error) => {
+        console.error("Oh no! Something went wrong", error);
       });
     } else {
       if (!existingPhone) {
