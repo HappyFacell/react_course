@@ -33,19 +33,19 @@
     {
       "content": "new post",
       "date": "2023-09-03T19:18:58.963Z",
-      "important": false,
+      "important": true,
       "id": 6
     },
     {
       "content": "hola mundo",
       "date": "2023-09-03T19:31:56.958Z",
-      "important": true,
+      "important": false,
       "id": 7
     },
     {
       "content": "diego",
       "date": "2023-09-03T19:32:27.859Z",
-      "important": false,
+      "important": true,
       "id": 8
     }
   ]
