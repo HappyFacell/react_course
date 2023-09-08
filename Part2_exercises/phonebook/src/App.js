@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForms";
 import Person from "./components/Persons";
+import Notification from "./components/Notification" 
 import { getAll, create, deleteOne, updateOne } from "./services/persons";
 
 const App = () => {
@@ -9,6 +10,8 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newPhone, setNewPhone] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [message, setMessage] = useState(null);
+  const [className, setClassName] = useState("")
 
   useEffect(() => {
     getAll().then((response) => {
@@ -30,8 +33,14 @@ const App = () => {
       .then((response) => {
         setPersons(persons.concat(response));
         console.log(response);
+        setMessage(`Added ${response.name}`)
+        setClassName("success")
         setNewName("");
         setNewPhone("");
+        setTimeout(()=>{
+          setMessage(null)
+          setClassName("")
+        }, 5000)
       })
       .catch((error) => {
         console.error("Oh no! Something went wrong", error);
@@ -59,7 +68,12 @@ const App = () => {
       );
     })
     .catch((error) => {
-      console.error("Error updating person:", error);
+      setMessage(`Information of ${person.name} has already been removed from server`);
+      setClassName("error");
+      setTimeout(()=>{
+        setMessage(null)
+        setClassName("")
+      }, 5000)
     });
   };
 
@@ -97,6 +111,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} className={className}/>
       <Filter searchTerm={searchTerm} handleSearchChange={handleSearchChange} />
       <h3>Add a new</h3>
       <PersonForm
