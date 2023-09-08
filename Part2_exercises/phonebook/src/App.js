@@ -33,7 +33,10 @@ const App = () => {
         setNewPhone("");
       });
     } else {
-      alert(`${newName} is already added to phonebook`);
+      if (existingPerson) {
+        
+        alert(`${newName} is already added to phonebook`);
+      }
     }
   };
 
@@ -47,6 +50,8 @@ const App = () => {
       setPersons(updatedPersons);
     }
   };
+
+  const updatePerson = (id, newPerson) => {};
 
   const handlePersonChange = (event) => {
     setNewName(event.target.value);
