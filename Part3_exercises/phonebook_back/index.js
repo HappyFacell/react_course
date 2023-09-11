@@ -26,35 +26,38 @@ let persons = [
   },
 ];
 
-
 const generateId = () => {
   const randomFraction = Math.random();
 
-  const uniqueId = (randomFraction * Number.MAX_SAFE_INTEGER).toString(16);
+  const uniqueId = randomFraction * Number.MAX_SAFE_INTEGER;
 
   return uniqueId;
-}
+};
 
-app.post('/api/persons', (request, response) => {
-  const body = request.body
+app.post("/api/persons", (request, response) => {
+  const body = request.body;
+  const existingPerson = persons.find((person) => person.name === body.name);
 
-  if (!body.content) {
-    return response.status(400).json({ 
-      error: 'content missing' 
-    })
+  if (!body.name || !body.number) {
+    return response.status(400).json({
+      error: "name or number missing",
+    });
+  }
+
+  if (existingPerson) {
+    return response.status(400).json({ error: "name must be unique" });
   }
 
   const note = {
     name: body.name,
     number: body.number,
-  
     id: generateId(),
-  }
+  };
 
-  persons = persons.concat(note)
+  persons = persons.concat(note);
 
-  response.json(note)
-})
+  response.json(note);
+});
 
 app.get("/", (request, response) => {
   response.send("<h1>Hello World!</h1>");
@@ -64,26 +67,25 @@ app.get("/api/persons", (request, response) => {
   response.json(persons);
 });
 
-app.get("/api/persons/:id", (request, response)=>{
+app.get("/api/persons/:id", (request, response) => {
   const id = Number(request.params.id);
-  const person = persons.find((person)=> person.id === id);
+  const person = persons.find((person) => person.id === id);
 
-  if (person){
+  if (person) {
     response.json(person);
-  }
-  else{
+  } else {
     response.status(404).end();
   }
 });
 
 app.delete("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id)
-  persons = persons.filter(note => note.id !== id)
+  const id = Number(request.params.id);
+  persons = persons.filter((note) => note.id !== id);
 
-  response.status(204).end()
-})
+  response.status(204).end();
+});
 
-app.get('/info', (req, res) => {
+app.get("/info", (req, res) => {
   const currentTime = new Date();
   const numberOfEntries = persons.length;
 
