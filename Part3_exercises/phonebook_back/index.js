@@ -26,12 +26,73 @@ let persons = [
   },
 ];
 
+
+const generateId = () => {
+  const randomFraction = Math.random();
+
+  const uniqueId = (randomFraction * Number.MAX_SAFE_INTEGER).toString(16);
+
+  return uniqueId;
+}
+
+app.post('/api/persons', (request, response) => {
+  const body = request.body
+
+  if (!body.content) {
+    return response.status(400).json({ 
+      error: 'content missing' 
+    })
+  }
+
+  const note = {
+    name: body.name,
+    number: body.number,
+  
+    id: generateId(),
+  }
+
+  persons = persons.concat(note)
+
+  response.json(note)
+})
+
 app.get("/", (request, response) => {
   response.send("<h1>Hello World!</h1>");
 });
 
 app.get("/api/persons", (request, response) => {
   response.json(persons);
+});
+
+app.get("/api/persons/:id", (request, response)=>{
+  const id = Number(request.params.id);
+  const person = persons.find((person)=> person.id === id);
+
+  if (person){
+    response.json(person);
+  }
+  else{
+    response.status(404).end();
+  }
+});
+
+app.delete("/api/persons/:id", (request, response) => {
+  const id = Number(request.params.id)
+  persons = persons.filter(note => note.id !== id)
+
+  response.status(204).end()
+})
+
+app.get('/info', (req, res) => {
+  const currentTime = new Date();
+  const numberOfEntries = persons.length;
+
+  const htmlResponse = `
+        <p>Phonebook has infor for ${numberOfEntries} people</p>
+        <p>${currentTime}</p>
+  `;
+
+  res.send(htmlResponse);
 });
 
 const PORT = 3001;
