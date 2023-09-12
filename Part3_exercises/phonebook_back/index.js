@@ -1,7 +1,18 @@
 const express = require("express");
 const app = express();
+const morgan = require('morgan');
 
 app.use(express.json());
+app.use(morgan((tokens, req, res) => {
+  return [
+    tokens.method(req, res),
+    tokens.url(req, res),
+    tokens.status(req, res),
+    tokens.res(req, res, 'content-length'), '-',
+    tokens['response-time'](req, res), 'ms',
+    JSON.stringify(req.body) // Agrega el cuerpo de la solicitud
+  ].join(' ');
+}));
 
 let persons = [
   {
@@ -27,12 +38,11 @@ let persons = [
 ];
 
 const generateId = () => {
-  const randomFraction = Math.random();
-
-  const uniqueId = randomFraction * Number.MAX_SAFE_INTEGER;
-
-  return uniqueId;
-};
+  const maxId = persons.length > 0
+    ? Math.max(...persons.map(n => n.id))
+    : 0
+  return maxId + 1
+}
 
 app.post("/api/persons", (request, response) => {
   const body = request.body;
