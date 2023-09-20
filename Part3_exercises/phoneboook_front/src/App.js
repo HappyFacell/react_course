@@ -19,8 +19,7 @@ const App = () => {
     });
   }, []);
 
-console.log(process.env.API_URL);
-
+  
   const addPerson = (event) => {
     const existingPerson = persons.find((person) => person.name === newName);
     const existingPhone = persons.find((phone) => phone.number === newPhone);

@@ -1,36 +1,42 @@
 const express = require("express");
-const morgan = require('morgan');
-const cors = require('cors');
+const morgan = require("morgan");
+const cors = require("cors");
 const app = express();
 
-
 const requestLogger = (request, response, next) => {
-  console.log('Method:', request.method)
-  console.log('Path:  ', request.path)
-  console.log('Body:  ', request.body)
-  console.log('---')
-  next()
-}
+  console.log("Method:", request.method);
+  console.log("Path:  ", request.path);
+  console.log("Body:  ", request.body);
+  console.log("---");
+  next();
+};
 
 const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint' })
-}
+  response.status(404).send({ error: "unknown endpoint" });
+};
 
-
-app.use(express.static('build'))
-app.use(requestLogger)
-app.use(cors())
+app.use(express.static("build"));
+app.use(cors());
 app.use(express.json());
-app.use(morgan((tokens, req, res) => {
-  return [
-    tokens.method(req, res),
-    tokens.url(req, res),
-    tokens.status(req, res),
-    tokens.res(req, res, 'content-length'), '-',
-    tokens['response-time'](req, res), 'ms',
-    JSON.stringify(req.body) // Agrega el cuerpo de la solicitud
-  ].join(' ');
-}));
+require("dotenv").config();
+app.use(requestLogger);
+
+app.use(
+  morgan((tokens, req, res) => {
+    return [
+      tokens.method(req, res),
+      tokens.url(req, res),
+      tokens.status(req, res),
+      tokens.res(req, res, "content-length"),
+      "-",
+      tokens["response-time"](req, res),
+      "ms",
+      JSON.stringify(req.body), // Agrega el cuerpo de la solicitud
+    ].join(" ");
+  })
+);
+
+const Person = require("./models/person");
 
 let persons = [
   {
@@ -55,16 +61,10 @@ let persons = [
   },
 ];
 
-const generateId = () => {
-  const maxId = persons.length > 0
-    ? Math.max(...persons.map(n => n.id))
-    : 0
-  return maxId + 1
-}
 
 app.post("/api/persons", (request, response) => {
   const body = request.body;
-  const existingPerson = persons.find((person) => person.name === body.name);
+  console.log("Body:  ", request.body);
 
   if (!body.name || !body.number) {
     return response.status(400).json({
@@ -72,19 +72,15 @@ app.post("/api/persons", (request, response) => {
     });
   }
 
-  if (existingPerson) {
-    return response.status(400).json({ error: "name must be unique" });
-  }
 
-  const note = {
+  const person = new Person({
     name: body.name,
     number: body.number,
-    id: generateId(),
-  };
+  });
 
-  persons = persons.concat(note);
-
-  response.json(note);
+  person.save().then((savedPerson) => {
+    response.json(savedPerson);
+  });
 });
 
 app.get("/", (request, response) => {
@@ -92,18 +88,15 @@ app.get("/", (request, response) => {
 });
 
 app.get("/api/persons", (request, response) => {
-  response.json(persons);
+  Person.find({}).then((persons) => {
+    response.json(persons);
+  });
 });
 
 app.get("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-  const person = persons.find((person) => person.id === id);
-
-  if (person) {
-    response.json(person);
-  } else {
-    response.status(404).end();
-  }
+  Person.findById(request.params.id).then(note => {
+    response.json(note)
+  })
 });
 
 app.delete("/api/persons/:id", (request, response) => {
@@ -125,7 +118,7 @@ app.get("/info", (req, res) => {
   res.send(htmlResponse);
 });
 
-app.use(unknownEndpoint)
+app.use(unknownEndpoint);
 
 const PORT = 3001;
 app.listen(PORT, () => {
