@@ -1,5 +1,5 @@
 import axios from 'axios'
-const baseUrl = 'http://localhost:3001/api/notes'
+const baseUrl = '/api/notes'
 
 
 const getAll = async () => {
@@ -19,6 +19,7 @@ const update = async (id, newObject) => {
   const response = await request
   return response.data
 }
+
 
 export default { 
   getAll, 
