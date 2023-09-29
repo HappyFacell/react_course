@@ -70,30 +70,38 @@ app.post("/api/persons", (request, response) => {
     number: body.number,
   });
 
-  person.save().then((savedPerson) => {
-    response.json(savedPerson);
-  });
+  person
+    .save()
+    .then((savedPerson) => {
+      response.json(savedPerson);
+    })
+    .catch((error) => {
+      if (error.name === "ValidationError") {
+        response.status(400).json({ error: "El nombre ya existe en la agenda" });
+      } else {
+        response.status(500).json({ error: "Error interno del servidor" });
+      }
+    });
 });
-
 
 app.get("/api/persons/:id", (request, response) => {
   Person.findById(request.params.id)
-  .then(person => {
-    if (person) {
-      response.json(person)
-    } else {
-      response.status(404).end()
-    }
-  })
-  .catch(error => next(error))
+    .then((person) => {
+      if (person) {
+        response.json(person);
+      } else {
+        response.status(404).end();
+      }
+    })
+    .catch((error) => next(error));
 });
 
 app.delete("/api/persons/:id", (request, response) => {
   Person.findByIdAndRemove(request.params.id)
-  .then(result => {
-    response.status(204).end()
-  })
-  .catch(error => next(error))
+    .then((result) => {
+      response.status(204).end();
+    })
+    .catch((error) => next(error));
 });
 
 app.get("/info", (req, res) => {
@@ -114,17 +122,17 @@ app.put("/api/persons/:id", (request, response) => {
   const person = {
     name: body.name,
     number: body.number,
-  }
+  };
 
   Person.findByIdAndUpdate(request.params.id, person, { new: true })
-  .then(updatedPerson => {
-    response.json(updatedPerson)
-  })
-  .catch(error => next(error))
+    .then((updatedPerson) => {
+      response.json(updatedPerson);
+    })
+    .catch((error) => next(error));
 });
 
 app.use(unknownEndpoint);
-app.use(errorHandler)
+app.use(errorHandler);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
