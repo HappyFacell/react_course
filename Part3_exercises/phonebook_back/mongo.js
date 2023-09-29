@@ -33,10 +33,6 @@ if (process.argv[3] != undefined && process.argv[4] != undefined) {
     );
     mongoose.connection.close();
   });
-  //   console.log(typeof(process.argv[3]));
-  //   console.log(typeof(process.argv[4]));
-  //   console.log("si existen");
-  //   mongoose.connection.close();
   return;
 }
 

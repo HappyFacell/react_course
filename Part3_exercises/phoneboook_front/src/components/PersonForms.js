@@ -10,11 +10,11 @@ const PersonForm = ({
   return (
     <form onSubmit={addPerson}>
       <div>
-        name: <input value={newName} onChange={handlePersonChange} />
+        name: <input value={newName} onChange={handlePersonChange}  minLength={3}/>
       </div>
       <div>
         number:{" "}
-        <input value={newPhone} onChange={handlePhoneChange} maxLength={12}  pattern="[0-9]+"/>
+        <input value={newPhone} onChange={handlePhoneChange} minLength={8}  pattern="[0-9]+"/>
       </div>
       <div>
         <button type="submit">add</button>

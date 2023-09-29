@@ -76,6 +76,7 @@ app.post("/api/persons", (request, response) => {
       response.json(savedPerson);
     })
     .catch((error) => {
+      console.log(error);
       if (error.name === "ValidationError") {
         response.status(400).json({ error: "El nombre ya existe en la agenda" });
       } else {
