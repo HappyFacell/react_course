@@ -12,7 +12,8 @@
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
     "logs:prod": "heroku logs --tail",
     "deploy:git": "@powershell Remove-Item -Recurse -Force node_modules && @powershell Remove-Item -Recurse -Force package-lock.json && git add . && git commit -m Some_changes && git push",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "author": "Diego Ferriera",
   "license": "MIT",
