@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
 if (process.argv.length < 3) {
-  console.log(
+  logger.info(
     'Please provide the password as an argument: node mongo.js <password>'
   );
   process.exit(1);
