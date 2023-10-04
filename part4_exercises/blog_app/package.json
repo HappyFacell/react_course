@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --verbose",
     "build:ui": "@powershell Remove-Item -Recurse -Force build && cd ../FrontEnd/ && npm run build && @powershell Copy-Item ./build -Recurse ../BackEnd/",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
@@ -21,6 +21,10 @@
   },
   "devDependencies": {
     "eslint": "^8.50.0",
+    "jest": "^29.7.0",
     "nodemon": "^3.0.1"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
