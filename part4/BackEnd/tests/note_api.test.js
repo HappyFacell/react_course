@@ -10,11 +10,10 @@ const helper = require('./test_helper')
 beforeEach(async () => {
   await Note.deleteMany({})
 
-  let noteObject = new Note(helper.initialNotes[0])
-  await noteObject.save()
-
-  noteObject = new Note(helper.initialNotes[1])
-  await noteObject.save()
+  for (let note of helper.initialNotes) {
+    let noteObject = new Note(note)
+    await noteObject.save()
+  }
 })
 
 test('notes are returned as json', async () => {
@@ -33,11 +32,9 @@ test('all notes are returned', async () => {
 test('a specific note is within the returned notes', async () => {
   const response = await api.get('/api/notes')
 
-  const contents = response.body.map(r => r.content)
+  const contents = response.body.map((r) => r.content)
 
-  expect(contents).toContain(
-    'Browser can execute only JavaScript'
-  )
+  expect(contents).toContain('Browser can execute only JavaScript')
 })
 
 test('a valid note can be added ', async () => {
@@ -54,7 +51,6 @@ test('a valid note can be added ', async () => {
 
   const notesAtEnd = await helper.notesInDb()
   expect(notesAtEnd).toHaveLength(helper.initialNotes.length + 1)
-
   const contents = notesAtEnd.map(n => n.content)
   expect(contents).toContain(
     'async/await simplifies making async calls'
@@ -63,13 +59,10 @@ test('a valid note can be added ', async () => {
 
 test('note without content is not added', async () => {
   const newNote = {
-    important: true
+    important: true,
   }
 
-  await api
-    .post('/api/notes')
-    .send(newNote)
-    .expect(400)
+  await api.post('/api/notes').send(newNote).expect(400)
 
   const notesAtEnd = await helper.notesInDb()
 
@@ -86,25 +79,22 @@ test('a specific note can be viewed', async () => {
     .expect(200)
     .expect('Content-Type', /application\/json/)
 
+  const processedNoteToView = JSON.parse(JSON.stringify(noteToView))
 
-  expect(resultNote.body).toEqual(noteToView)
+  expect(resultNote.body).toEqual(processedNoteToView)
 })
 
 test('a note can be deleted', async () => {
   const notesAtStart = await helper.notesInDb()
   const noteToDelete = notesAtStart[0]
 
-  await api
-    .delete(`/api/notes/${noteToDelete.id}`)
-    .expect(204)
+  await api.delete(`/api/notes/${noteToDelete.id}`).expect(204)
 
   const notesAtEnd = await helper.notesInDb()
 
-  expect(notesAtEnd).toHaveLength(
-    helper.initialNotes.length - 1
-  )
+  expect(notesAtEnd).toHaveLength(helper.initialNotes.length - 1)
 
-  const contents = notesAtEnd.map(r => r.content)
+  const contents = notesAtEnd.map((r) => r.content)
 
   expect(contents).not.toContain(noteToDelete.content)
 })

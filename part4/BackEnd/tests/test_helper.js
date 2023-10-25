@@ -3,10 +3,12 @@ const Note = require('../models/note')
 const initialNotes = [
   {
     content: 'HTML is easy',
+    date: new Date(),
     important: false
   },
   {
     content: 'Browser can execute only JavaScript',
+    date: new Date(),
     important: true
   }
 ]
