@@ -2,16 +2,18 @@ import { useState, useEffect } from "react";
 import Note from "./components/Note";
 import Notification from "./components/Notification";
 import Footer from "./components/Footer";
-import LoginForm from "./components/login";
+import LoginForm from "./components/loginForm";
+import Togglable from "./components/Togglable";
+import NoteForm from "./components/NoteForm";
 import noteService from "./services/notes";
 import loginService from "./services/login";
 
 const App = () => {
   const [notes, setNotes] = useState([]);
+  const [newNote, setNewNote] = useState("");
   const [showAll, setShowAll] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [loginVisible, setLoginVisible] = useState("");
-  const [newNote, setNewNote] = useState("");
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
@@ -32,16 +34,36 @@ const App = () => {
     }
   }, []);
 
-  const addNote = (event) => {
-    event.preventDefault();
-    const noteObject = {
-      content: newNote,
-      important: Math.random() > 0.5,
-    };
 
-    noteService.create(noteObject).then((returnedNote) => {
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    console.log("logging in with", username, password);
+
+    try {
+      const user = await loginService.login({
+        username,
+        password,
+      });
+
+      window.localStorage.setItem("loggedNoteappUser", JSON.stringify(user));
+      noteService.setToken(user.token);
+      setUser(user);
+      setUsername("");
+      setPassword("");
+    } catch (exception) {
+      setErrorMessage("Wrong credentials");
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }
+  };
+
+  const addNote = (noteObject) => {
+
+    noteService
+    .create(noteObject)
+    .then((returnedNote) => {
       setNotes(notes.concat(returnedNote));
-      setNewNote("");
     });
   };
 
@@ -71,70 +93,31 @@ const App = () => {
       });
   };
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
-    console.log("logging in with", username, password);
-
-    try {
-      const user = await loginService.login({
-        username,
-        password,
-      });
-
-      window.localStorage.setItem("loggedNoteappUser", JSON.stringify(user));
-      noteService.setToken(user.token);
-      setUser(user);
-      setUsername("");
-      setPassword("");
-    } catch (exception) {
-      setErrorMessage("Wrong credentials");
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
-    }
-  };
-
-  const noteForm = () => (
-    <form onSubmit={addNote}>
-      <input value={newNote} onChange={handleNoteChange} />
-      <button type="submit">save</button>
-    </form>
-  );
-
-  const loginForm = () => {
-    const hideWhenVisible = { display: loginVisible ? "none" : "" };
-    const showWhenVisible = { display: loginVisible ? "" : "none" };
-
-    return (
-      <div>
-        <div style={hideWhenVisible}>
-          <button onClick={() => setLoginVisible(true)}>log in</button>
-        </div>
-        <div style={showWhenVisible}>
-          <LoginForm
+  
+  return (
+    <div>
+      <h1>Notes app</h1>
+      <Notification message={errorMessage} />
+      {!user &&
+      <Togglable buttonLabel="log in">
+        <LoginForm
             username={username}
             password={password}
             handleUsernameChange={({ target }) => setUsername(target.value)}
             handlePasswordChange={({ target }) => setPassword(target.value)}
             handleSubmit={handleLogin}
           />
-          <button onClick={() => setLoginVisible(false)}>cancel</button>
-        </div>
+      </Togglable>
+      }
+
+      {user &&
+      <div>
+        <p>{user.name} logged in</p>
+        <Togglable buttonLabel="new note">
+            <NoteForm createNote={addNote} />
+          </Togglable>
       </div>
-    );
-  };
-  return (
-    <div>
-      <h1>Notes app</h1>
-      <Notification message={errorMessage} />
-      {user === null ? (
-        loginForm()
-      ) : (
-        <div>
-          <p>{user.name} logged-in</p>
-          {noteForm()}
-        </div>
-      )}
+      }
 
       <div>
         <button onClick={() => setShowAll(!showAll)}>
