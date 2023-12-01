@@ -8,29 +8,29 @@ blogsRouter.get("/", async (request, response) => {
   response.json(blog);
 });
 
-blogsRouter.post("/", userExtractor,async (request, response) => {
+blogsRouter.post("/", userExtractor, async (request, response) => {
   const body = request.body;
 
   const blog = new Blog({
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes? body.likes : 0
+    likes: body.likes ? body.likes : 0,
   });
-  
+
   const user = request.user;
 
-  if(!user){
-    return response.status(401).json({error: 'operation not permitted'});
+  if (!user) {
+    return response.status(401).json({ error: "operation not permitted" });
   }
 
-  blog.user = user._id
+  blog.user = user._id;
 
-  const createdBlog = await blog.save()
+  const createdBlog = await blog.save();
 
-  user.blogs = user.blogs.concat(createdBlog._id)
+  user.blogs = user.blogs.concat(createdBlog._id);
 
-  await user.save()
+  await user.save();
 
   response.status(201).json(createdBlog);
 });
@@ -45,18 +45,18 @@ blogsRouter.get("/:id", async (request, response) => {
   }
 });
 
-blogsRouter.delete("/:id", userExtractor,async (request, response) => {
+blogsRouter.delete("/:id", userExtractor, async (request, response) => {
   const blog = await Blog.findById(request.params.id);
   const user = request.user;
 
-  if (user || blog.user.toString() !== user.id.toString()) {
+  if (!user || blog.user.toString() !== user.id.toString()) {
     return response.status(401).json({ error: "operation not permitted" });
   }
 
   user.blogs = user.blogs.filter((b) => b.toString() !== blog.id.toString());
 
   await user.save();
-  await blog.remove();
+  await blog.deleteOne({_id: blog.id});
 
   response.status(204).end();
 });

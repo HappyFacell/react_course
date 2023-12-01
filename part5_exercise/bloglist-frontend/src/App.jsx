@@ -42,6 +42,13 @@ const App = () => {
     }, 5000);
   };
 
+  const updateLikesOf = async (id) => {
+    const blog = blogs.find((n) => n.id === id);
+    const changedBlog = { ...blog, likes: (blog.likes += 1) };
+    const returnedBlog = await blogService.update(id, changedBlog);
+    setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)));
+  };
+
   const handleLogin = async (event) => {
     event.preventDefault();
     console.log("logging in with", username, password);
@@ -102,8 +109,14 @@ const App = () => {
         </div>
       )}
       <div>
-        {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} user={user}/>
+        {blogs
+        .sort((a, b) => b.likes - a.likes)
+        .map((blog) => (
+          <Blog
+            key={blog.id}
+            blog={blog}
+            updateLikesOf={() => updateLikesOf(blog.id)}
+          />
         ))}
       </div>
     </div>
