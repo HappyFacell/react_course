@@ -49,6 +49,14 @@ const App = () => {
     setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)));
   };
 
+  const deleteBlog = async (id) => {
+    const blog = blogs.find((n) => n.id === id);
+    if(window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)){
+      await blogService.remove(id)
+      setBlogs(blogs.filter((blog)=> blog.id !== id))
+    }
+  }
+
   const handleLogin = async (event) => {
     event.preventDefault();
     console.log("logging in with", username, password);
@@ -115,7 +123,9 @@ const App = () => {
           <Blog
             key={blog.id}
             blog={blog}
-            updateLikesOf={() => updateLikesOf(blog.id)}
+            user={user}
+            handleLikes={() => updateLikesOf(blog.id)}
+            handleRemove={() => deleteBlog(blog.id)}
           />
         ))}
       </div>
