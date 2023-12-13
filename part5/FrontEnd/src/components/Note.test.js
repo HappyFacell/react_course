@@ -1,7 +1,7 @@
 import React from "react";
 import "@testing-library/jest-dom";
 import { render, fireEvent, screen } from "@testing-library/react";
-import { prettyDOM } from "@testing-library/dom";
+// import { prettyDOM } from "@testing-library/dom";
 import Note from "./Note";
 
 test("renders content", () => {
@@ -14,9 +14,9 @@ test("renders content", () => {
 
   // component.debug()
 
-  const li = component.container.querySelector("li");
+  // const li = component.container.querySelector("li");
 
-  console.log(prettyDOM(li));
+  // console.log(prettyDOM(li));
     // method 1
     expect(component.container).toHaveTextContent(
       'Component testing is done with react-testing-library'
