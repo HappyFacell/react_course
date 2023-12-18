@@ -101,7 +101,7 @@ const App = () => {
       <h1>Notes app</h1>
       <Notification message={errorMessage} />
       {!user &&
-      <Togglable buttonLabel="log in">
+      <Togglable buttonLabel="login">
         <LoginForm
           username={username}
           password={password}
