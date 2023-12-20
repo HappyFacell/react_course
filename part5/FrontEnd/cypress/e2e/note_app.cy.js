@@ -1,7 +1,14 @@
 describe('Note app', function() {
 
   beforeEach(function() {
-    cy.visit('http://localhost:3000')
+    cy.visit('')
+    cy.request('POST', `${Cypress.env('BACKEND')}/testing/reset`)
+    const user = {
+      name: 'Matti Luukkainen',
+      username: 'mluukkai',
+      password: 'salainen'
+    }
+    cy.request('POST', `${Cypress.env('BACKEND')}/users`, user)
   })
 
   it('front page can be opened', function() {
@@ -21,12 +28,25 @@ describe('Note app', function() {
     cy.get('#login-button').click()
     cy.contains('Matti Luukkainen logged in')
   })
+
+  it('login fails with wrong password', function() {
+    cy.contains('login').click()
+    cy.get('#username').type('mluukkai')
+    cy.get('#password').type('wrong')
+    cy.get('#login-button').click()
+  
+    cy.get('div.error')
+      .should('contain', 'Wrong credentials')
+      .and('have.css', 'color', 'rgb(255, 0, 0)')
+      .and('have.css', 'border-style', 'solid')
+  
+  
+    cy.get('html').should('not.contain', 'Matti Luukkainen logged in')
+  })
+
   describe('when logged in', function() {
     beforeEach(function() {
-      cy.contains('login').click()
-      cy.get('#username').type('mluukkai')
-      cy.get('#password').type('salainen')
-      cy.get('#login-button').click()
+      cy.login({ username: 'mluukkai', password: 'salainen' })
     })
 
 
@@ -36,6 +56,28 @@ describe('Note app', function() {
       cy.contains('save').click()
       cy.contains('a note created by cypress')
     })
+
+    describe('and a note exists', function () {
+      beforeEach(function () {
+        cy.createNote({
+          content: 'another note cypress',
+          important: false        
+        })
+      })
+
+      it('it can be made important', function () {
+        cy.contains('another note cypress')
+          .contains('make important')
+          .click()
+
+        cy.contains('another note cypress')
+          .contains('make not important')
+      })
+
   })
 })
+
+
+})
+
 
