@@ -1,7 +1,8 @@
+import React from 'react'
 import { useState } from 'react'
 import PropTypes from 'prop-types'
 
-const Blog = ({ blog, user,handleLikes, handleRemove }) => {
+const Blog = ({ blog, user, handleLikes, handleRemove }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -17,25 +18,24 @@ const Blog = ({ blog, user,handleLikes, handleRemove }) => {
 
   if (visible) {
     return (
-      <div style={blogStyle}>
+      <div className="blog" style={blogStyle}>
         <div>
-          {blog.title} {blog.author}
+          <div>
+            {blog.title} {blog.author}
+          </div>
           <button onClick={toggleVisiblility}>hide</button>
         </div>
-
         <div>
           <div>{blog.url}</div>
           <div>
-            likes: {blog.likes}
+            <div>likes: {blog.likes}</div>
             <button onClick={handleLikes}>Like</button>
           </div>
           <div>{blog.user.name}</div>
         </div>
         {blog.user.name === user.name ? (
           <button onClick={handleRemove}>remove</button>
-        )
-          : null
-        }
+        ) : null}
       </div>
     )
   }
@@ -43,7 +43,9 @@ const Blog = ({ blog, user,handleLikes, handleRemove }) => {
   return (
     <div style={blogStyle}>
       <div>
-        {blog.title} {blog.author}
+        <div className="blog">
+          {blog.title} {blog.author}
+        </div>
         <button onClick={toggleVisiblility}>
           view
         </button>
@@ -54,7 +56,7 @@ const Blog = ({ blog, user,handleLikes, handleRemove }) => {
 
 Blog.PropTypes = {
   handleLikes: PropTypes.func.isRequired,
-  handleRemove: PropTypes.func.isRequired
+  handleRemove: PropTypes.func.isRequired,
 }
 
 export default Blog

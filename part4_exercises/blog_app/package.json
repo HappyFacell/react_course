@@ -9,7 +9,8 @@
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
     "build:ui": "@powershell Remove-Item -Recurse -Force build && cd ../FrontEnd/ && npm run build && @powershell Copy-Item ./build -Recurse ../BackEnd/",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "start:test": "cross-env NODE_ENV=test node index.js"
   },
   "author": "Diego Ferreira",
   "license": "MIT",
