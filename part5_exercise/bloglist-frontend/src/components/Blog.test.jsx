@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, fireEvent, screen } from '@testing-library/react'
+import { fireEvent, screen, render } from '@testing-library/react'
 import { vi, expect, test } from 'vitest'
 
 import Blog from './Blog'
@@ -20,11 +20,11 @@ const blog = {
   }
 }
 
+
+const mockHandler = vi.fn()
+const component = render(<Blog blog={blog} handleLikes={mockHandler} user={user}/>)
+
 test('renders title and author', () => {
-
-  const mockHandler = vi.fn()
-
-  render(<Blog blog={blog} like={mockHandler} />)
 
   const div = screen.getByText(/Batman/i)
 
@@ -34,10 +34,6 @@ test('renders title and author', () => {
 })
 
 test('url and likes show on button click', async () => {
-
-  const mockHandler = vi.fn()
-
-  render(<Blog blog={blog} like={mockHandler} user={user}/>)
 
   const button = screen.getByText('view')
 
@@ -51,27 +47,23 @@ test('url and likes show on button click', async () => {
 
 })
 
-// test('like button clicked calls handler', async () => {
+test('like button clicked calls handler', async () => {
+ 
 
-//   const mockHandler = vi.fn()
+  const button = screen.getByText('Like')
+  fireEvent.click(button)
 
-//   render(<Blog blog={blog} like={mockHandler} />)
+  expect(mockHandler).toHaveBeenCalledTimes(1)
 
-//   const button = screen.getByText('like')
-//   fireEvent.click(button)
+})
 
-//   expect(mockHandler).toHaveBeenCalledTimes(1)
+test('clicking like button twice, calls the handler twice', () => {
 
-// })
-// test('clicking like button twice, calls the handler twice', () => {
-//   const btn = component.getByText('view')
-//   fireEvent.click(btn)
+  const btnLikes = component.container.querySelector('.btnLikes')
 
-//   const btnLikes = component.container.querySelector('.btnLikes')
+  for (let x = 0; x < 2; x++) {
+    fireEvent.click(btnLikes)
+  }
 
-//   for (let x = 0; x < 2; x++) {
-//     fireEvent.click(btnLikes)
-//   }
-
-//   expect(mockHandler.mock.calls).toHaveLength(2)
-// })
+  expect(mockHandler.mock.calls).toHaveLength(3)
+})
