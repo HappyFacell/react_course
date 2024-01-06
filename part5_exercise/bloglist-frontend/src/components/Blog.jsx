@@ -2,7 +2,7 @@ import React from 'react'
 import { useState } from 'react'
 import PropTypes from 'prop-types'
 
-const Blog = ({ blog, user, handleLikes, handleRemove }) => {
+const Blog = ({ blog, loggedUser, handleLikes, handleRemove }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -11,6 +11,7 @@ const Blog = ({ blog, user, handleLikes, handleRemove }) => {
     marginBottom: 5,
   }
   const [visible, setVisible] = useState(false)
+  const user = loggedUser || {}
 
   const toggleVisiblility = () => {
     setVisible(!visible)
@@ -33,7 +34,7 @@ const Blog = ({ blog, user, handleLikes, handleRemove }) => {
           </div>
           <div>{blog.user.name}</div>
         </div>
-        {blog.user.name === user.name ? (
+        {blog.user === user.id ? (
           <button onClick={handleRemove}>remove</button>
         ) : null}
       </div>
