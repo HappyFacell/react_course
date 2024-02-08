@@ -86,6 +86,46 @@ describe('Blog app', function() {
       cy.get('.btnRemove').should('not.exist')
     })
 
+    it('The blog with most likes it is in the top', function() {
+      cy.get('.blog').eq(0).should('contain', 'first blog')
+      cy.get('.blog').eq(1).should('contain', 'second blog')
+      cy.get('.blog').eq(2).should('contain', 'third blog')
+
+      cy.contains('second blog').parent().find('button').as('theButton')
+      cy.get('@theButton').click()
+      cy.get('.btnLikes').click()
+      cy.contains('likes:').should('contain', 'likes: 1')
+      cy.get('.btnLikes').click()
+      cy.contains('likes:').should('contain', 'likes: 2')
+      cy.get('.btnLikes').click()
+      cy.contains('likes:').should('contain', 'likes: 3')
+      cy.contains('hide').click()
+      
+      
+      
+      cy.contains('first blog').parent().find('button').as('theButton2')
+      cy.get('@theButton2').click()
+      cy.get('.btnLikes').click()
+      cy.contains('likes:').should('contain', 'likes: 1')
+      cy.contains('hide').click()
+
+      cy.contains('third blog').parent().find('button').as('theButton3')
+      cy.get('@theButton3').click()
+      cy.get('.btnLikes').click()
+      cy.contains('likes:').should('contain', 'likes: 1')
+      cy.get('.btnLikes').click()
+      cy.contains('likes:').should('contain', 'likes: 2')
+      cy.get('.btnLikes').click()
+      cy.contains('likes:').should('contain', 'likes: 3')
+      cy.get('.btnLikes').click()
+
+      cy.contains('likes:').should('contain', 'likes: 4')
+      cy.get('.blog').eq(2).should('contain', 'first blog')
+      cy.get('.blog').eq(1).should('contain', 'second blog')
+      cy.get('.blog').eq(0).should('contain', 'third blog')
+
+    })
+
 
   })
 
